@@ -19,6 +19,8 @@ namespace Muhanok.Composition
         public InputSourceKind inputSource = InputSourceKind.Keyboard;
         public int udpPort = 52100;
         [Range(0.01f, 1f)] public float latencySmoothing = 0.1f;
+        [Tooltip("게임 오버 후 자동 재시작까지의 초. 0이면 R 키로만 재시작")]
+        public float restartAfterSeconds = 5f;
 
         [Header("Profiles (비어 있으면 기본값으로 생성)")]
         public TuningProfile? tuning;

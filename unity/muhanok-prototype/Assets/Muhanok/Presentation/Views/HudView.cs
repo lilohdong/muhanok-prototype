@@ -22,14 +22,16 @@ namespace Muhanok.Presentation.Views
         private readonly StringBuilder sb = new StringBuilder(256);
         private RunState? state;
         private string inputLabel = "";
+        private float restartAfterSeconds;
         private float refreshRemaining;
 
-        public void Construct(PresentationProfile profile, ILatencyReadout latencyReadout, IPoseStatus poseStatus, string inputSourceLabel)
+        public void Construct(PresentationProfile profile, ILatencyReadout latencyReadout, IPoseStatus poseStatus, string inputSourceLabel, float restartAfterSeconds)
         {
             p = profile;
             latency = latencyReadout;
             pose = poseStatus;
             inputLabel = inputSourceLabel;
+            this.restartAfterSeconds = restartAfterSeconds;
             BuildCanvas();
         }
 
@@ -83,9 +85,19 @@ namespace Muhanok.Presentation.Views
             state = s;
         }
 
+        public const string CalibrationNoSignal = "WAITING FOR CAMERA\n\nrun:  uv run pose live --preview";
+        public const string CalibrationInFrame = "CALIBRATING\n\nStand still so your head and both shoulders are in frame";
+
+        /// null이면 안내 문구를 지운다.
+        public void ShowCalibration(string? message)
+        {
+            center.text = message ?? "";
+        }
+
         public void ShowGameOver(int score)
         {
-            center.text = "CAUGHT!\nScore " + score + "\n\n(Stop and Play again to retry)";
+            var auto = restartAfterSeconds > 0f ? "  ·  auto-restart in " + restartAfterSeconds.ToString("F0") + "s" : "";
+            center.text = "CAUGHT!\nScore " + score + "\n\nR = retry" + auto;
         }
 
         private void Update()

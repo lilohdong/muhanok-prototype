@@ -49,11 +49,15 @@ namespace Muhanok.Composition
                     presentation,
                     container.Resolve<ILatencyReadout>(),
                     container.Resolve<IPoseStatus>(),
-                    cfg.inputSource.ToString());
+                    cfg.inputSource.ToString(),
+                    cfg.restartAfterSeconds);
                 container.Resolve<GameLoopBehaviour>().Construct(
                     container.Resolve<RunSession>(),
                     container.Resolve<IClock>(),
-                    container.Resolve<IReadOnlyList<IPerFrame>>());
+                    container.Resolve<IReadOnlyList<IPerFrame>>(),
+                    container.Resolve<IPoseStatus>(),
+                    container.Resolve<HudView>(),
+                    cfg.restartAfterSeconds);
             });
         }
 
