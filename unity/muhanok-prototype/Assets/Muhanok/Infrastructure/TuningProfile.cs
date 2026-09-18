@@ -21,7 +21,9 @@ namespace Muhanok.Infrastructure
         [Range(0.1f, 1f)] public float kneeOppositeFactor = 0.6f;
         [Range(0.0f, 2f)] public float armRaiseThreshold = 0.20f;
         [Range(0.05f, 2f)] public float duckThreshold = 0.80f;
-        [Range(0.05f, 2f)] public float stepThreshold = 0.50f;
+        [Range(0.05f, 2f)] public float stepThreshold = 0.30f;
+        [Tooltip("사이드 스텝 기준점: 0 = 어깨 중심만, 1 = 코만. 기울이기로 조작하려면 올린다")]
+        [Range(0f, 1f)] public float stepHeadWeight = 0.6f;
 
         [Header("Stabilizers (§8.4)")]
         [Range(0.3f, 1f)] public float releaseFactor = 0.7f;
@@ -45,6 +47,7 @@ namespace Muhanok.Infrastructure
             armRaiseThreshold,
             duckThreshold,
             stepThreshold,
+            stepHeadWeight,
             releaseFactor,
             confirmFrames,
             cooldownSeconds,

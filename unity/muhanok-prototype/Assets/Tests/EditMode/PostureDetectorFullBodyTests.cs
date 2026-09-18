@@ -16,7 +16,7 @@ namespace Muhanok.Tests
         private static DetectorSettings FullBodyDefaults() => new DetectorSettings(
             BodyMode.FullBody,
             jumpThreshold: 0.22f, kneeThreshold: 0.55f, kneeOppositeFactor: 0.6f, armRaiseThreshold: 0.20f,
-            duckThreshold: 0.40f, stepThreshold: 0.45f,
+            duckThreshold: 0.40f, stepThreshold: 0.45f, stepHeadWeight: 0f,
             releaseFactor: 0.7f, confirmFrames: 2, cooldownSeconds: 0.3,
             baselineSampleCount: 30, baselineMinSamples: 10,
             minVisibility: 0.5f, lostTimeoutSeconds: 1.0, cameraFacesUser: true);

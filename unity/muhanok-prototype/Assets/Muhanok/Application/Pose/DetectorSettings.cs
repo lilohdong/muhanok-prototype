@@ -25,6 +25,9 @@ namespace Muhanok.Application.Pose
         public float ArmRaiseThreshold { get; }
         public float DuckThreshold { get; }
         public float StepThreshold { get; }
+        /// UpperBody: 사이드 스텝 기준 x = shoulderMid.x와 nose.x의 혼합. 0 = 어깨만, 1 = 코만.
+        /// 기울이기만 해도 머리가 어깨보다 크게 움직이므로 코를 섞으면 적은 동작으로도 잡힌다.
+        public float StepHeadWeight { get; }
 
         /// 히스테리시스: 해제 임계값 = 진입 × 이 값
         public float ReleaseFactor { get; }
@@ -51,6 +54,7 @@ namespace Muhanok.Application.Pose
             float armRaiseThreshold,
             float duckThreshold,
             float stepThreshold,
+            float stepHeadWeight,
             float releaseFactor,
             int confirmFrames,
             double cooldownSeconds,
@@ -67,6 +71,7 @@ namespace Muhanok.Application.Pose
             ArmRaiseThreshold = armRaiseThreshold;
             DuckThreshold = duckThreshold;
             StepThreshold = stepThreshold;
+            StepHeadWeight = stepHeadWeight < 0f ? 0f : stepHeadWeight > 1f ? 1f : stepHeadWeight;
             ReleaseFactor = releaseFactor;
             ConfirmFrames = confirmFrames < 1 ? 1 : confirmFrames;
             CooldownSeconds = cooldownSeconds;

@@ -19,7 +19,8 @@ MonoBehaviour:
   kneeOppositeFactor: 0.6
   armRaiseThreshold: 0.2
   duckThreshold: 0.8
-  stepThreshold: 0.5
+  stepThreshold: 0.3
+  stepHeadWeight: 0.6
   releaseFactor: 0.7
   confirmFrames: 2
   cooldownSeconds: 0.3

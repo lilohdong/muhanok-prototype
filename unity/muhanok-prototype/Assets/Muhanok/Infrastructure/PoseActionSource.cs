@@ -82,6 +82,7 @@ namespace Muhanok.Infrastructure
             h.Add(p.armRaiseThreshold);
             h.Add(p.duckThreshold);
             h.Add(p.stepThreshold);
+            h.Add(p.stepHeadWeight);
             h.Add(p.releaseFactor);
             h.Add(p.confirmFrames);
             h.Add(p.cooldownSeconds);

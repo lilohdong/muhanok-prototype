@@ -230,7 +230,8 @@ namespace Muhanok.Application.Pose
             {
                 sig.Unit = shoulderW;
                 sig.BodyY = shoulderMidY;
-                sig.BodyX = shoulderMidX;
+                // 코를 섞어 기울임에도 반응하게 (StepHeadWeight)
+                sig.BodyX = shoulderMidX + (nose.X - shoulderMidX) * s.StepHeadWeight;
                 // 손목이 안 보이면(프레임 아래) "안 든 것"으로 본다. 든 손은 반드시 보인다.
                 sig.LiftLeftValid = Visible(f, LandmarkIndex.LeftWrist, out var lw);
                 sig.LiftLeft = sig.LiftLeftValid ? nose.Y - lw.Y : float.NegativeInfinity;

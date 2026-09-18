@@ -448,7 +448,7 @@ noseY       = lm[0].y
 | **Jump** | `baselineShoulderY - shoulderMid.y > T_jump * W` | `T_jump = 0.45` | 전신이 뜨면 어깨도 같이 뜬다 |
 | **KneeRaise** (실제 제스처: **ArmRaise**) | 한쪽 손목 `noseY - wristY > T_arm * W` **이고** 반대쪽 손목은 어깨선 아래 | `T_arm = 0.20` | 무릎이 안 보이므로 대체. 한 손만 → 좌우 흔들림/기지개와 구분 |
 | **Duck** | `noseY - baselineNoseY > T_duck * W` | `T_duck = 0.80` | 점프 직전 움츠림(≈0.3W)보다 확실히 커야 한다 |
-| **StepLeft/Right** | `shoulderMid.x - baselineShoulderX` 가 `±T_step * W` 밖이면 그 쪽 **존(zone)** | `T_step = 0.50` | 아래 "존 방식" 참조 |
+| **StepLeft/Right** | `bodyX - baselineX` 가 `±T_step * W` 밖이면 그 쪽 **존(zone)**. `bodyX = lerp(shoulderMid.x, nose.x, headWeight)` | `T_step = 0.30`, `headWeight = 0.6` | 아래 "존 방식" 참조. 코를 섞는 이유: 노트북 캠 앞에선 실제로 옆으로 걷기보다 **기울이기**가 자연스럽고, 기울이면 머리가 어깨보다 크게 움직인다 (2026-09-18 실측 후 0.50→0.30) |
 
 **사이드 스텝은 임펄스가 아니라 존(zone) 방식이다.** 몸의 x 위치를 `Left / Center / Right` 3개 존으로 나누고, 존이 바뀔 때마다 `StepLeft`/`StepRight`를 한 번 낸다. 왼쪽 존에서 가운데로 돌아오면 `StepRight`가 난다. 이래야 실제 몸 위치와 게임 레인이 1:1로 맞는다. 존 경계에는 히스테리시스(§8.4)를 건다. 베이스라인 x는 **Center 존에 있을 때만** 갱신한다.
 

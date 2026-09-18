@@ -19,16 +19,16 @@ namespace Muhanok.Tests
         public static DetectorSettings UpperBodyDefaults(bool cameraFacesUser = true) => new DetectorSettings(
             BodyMode.UpperBody,
             jumpThreshold: 0.45f, kneeThreshold: 0.55f, kneeOppositeFactor: 0.6f, armRaiseThreshold: 0.20f,
-            duckThreshold: 0.80f, stepThreshold: 0.50f,
+            duckThreshold: 0.80f, stepThreshold: 0.50f, stepHeadWeight: 0.6f,
             releaseFactor: 0.7f, confirmFrames: 2, cooldownSeconds: 0.3,
             baselineSampleCount: 30, baselineMinSamples: 10,
             minVisibility: 0.5f, lostTimeoutSeconds: 1.0, cameraFacesUser: cameraFacesUser);
 
         /// 몸 전체를 (dx, dy)만큼 옮기고, 선택적으로 한 손을 든 프레임.
-        private static PoseFrame Frame(long seq, float dx = 0f, float dy = 0f, float? leftWristLift = null, float? rightWristLift = null)
+        private static PoseFrame Frame(long seq, float dx = 0f, float dy = 0f, float? leftWristLift = null, float? rightWristLift = null, float noseDx = 0f)
         {
             var b = new PoseFrameBuilder()
-                .Set(LandmarkIndex.Nose, NoseX + dx, NoseY + dy, 0.95f)
+                .Set(LandmarkIndex.Nose, NoseX + dx + noseDx, NoseY + dy, 0.95f)
                 .Set(LandmarkIndex.LeftShoulder, ShoulderLX + dx, ShoulderY + dy, 0.95f)
                 .Set(LandmarkIndex.RightShoulder, ShoulderRX + dx, ShoulderY + dy, 0.95f);
             // 손목은 기본적으로 프레임 아래(안 보임)
@@ -61,6 +61,7 @@ namespace Muhanok.Tests
             public void Move(float dxInW, float dyInW, int frames) { for (var i = 0; i < frames; i++) Feed(Frame(seq++, dx: dxInW * W, dy: dyInW * W)); }
             public void RaiseLeft(float liftInW, int frames) { for (var i = 0; i < frames; i++) Feed(Frame(seq++, leftWristLift: liftInW * W)); }
             public void RaiseBoth(float liftInW, int frames) { for (var i = 0; i < frames; i++) Feed(Frame(seq++, leftWristLift: liftInW * W, rightWristLift: liftInW * W)); }
+            public void Lean(float noseDxInW, int frames) { for (var i = 0; i < frames; i++) Feed(Frame(seq++, noseDx: noseDxInW * W)); }
             public void Lost(int frames) { for (var i = 0; i < frames; i++) Feed(PoseFrame.Lost(seq, seq++ / Fps)); }
 
             public int Count(PlayerAction a) => Actions.FindAll(x => x == a).Count;
@@ -171,6 +172,18 @@ namespace Muhanok.Tests
             Assert.That(h.Detector.Zone, Is.EqualTo(Lane.Left));
             h.Shift(0f, 10);
             Assert.That(h.Actions, Is.EqualTo(new[] { PlayerAction.StepLeft, PlayerAction.StepRight }));
+            Assert.That(h.Detector.Zone, Is.EqualTo(Lane.Center));
+        }
+
+        [Test]
+        public void LeanOnly_TriggersStep_ViaHeadWeight()
+        {
+            // 어깨는 그대로, 머리만 1.0W 기울임 → 기준 x 이동 = 0.6 × 1.0W = 0.6W > 0.5W
+            var h = new Harness(UpperBodyDefaults());
+            h.Idle(30);
+            h.Lean(+1.0f, 10);
+            Assert.That(h.Actions, Is.EqualTo(new[] { PlayerAction.StepLeft }));
+            h.Lean(0f, 10);
             Assert.That(h.Detector.Zone, Is.EqualTo(Lane.Center));
         }
 
