@@ -1,4 +1,7 @@
-"""NDJSON 녹화/읽기. 한 줄 = UDP로 나간 패킷 그대로. Unity 회귀 테스트가 이 파일을 그대로 먹는다(§12-2)."""
+"""NDJSON 녹화/읽기. 한 줄 = UDP로 나간 패킷 그대로.
+
+Unity 회귀 테스트가 이 파일을 그대로 먹는다(§12-2).
+"""
 
 from __future__ import annotations
 

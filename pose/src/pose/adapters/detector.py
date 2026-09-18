@@ -1,4 +1,7 @@
-"""MediaPipe PoseLandmarker 래핑. Tasks API만 쓴다(§0-4, §9.2). mediapipe.solutions.* 는 존재하지 않는다."""
+"""MediaPipe PoseLandmarker 래핑. Tasks API만 쓴다(§0-4, §9.2).
+
+mediapipe.solutions.* 는 존재하지 않는다.
+"""
 
 from __future__ import annotations
 
@@ -23,7 +26,7 @@ def download_model(dest: Path = DEFAULT_MODEL_PATH) -> Path:
     if dest.exists():
         return dest
     print(f"downloading {MODEL_URL} -> {dest}")
-    urllib.request.urlretrieve(MODEL_URL, dest)  # noqa: S310 - 고정된 공식 URL
+    urllib.request.urlretrieve(MODEL_URL, dest)
     return dest
 
 
@@ -44,7 +47,10 @@ class PoseDetector:
         self._last_ts_ms = -1
 
     def detect(self, frame_bgr: np.ndarray, timestamp_ms: int) -> list | None:
-        """33개 NormalizedLandmark 리스트, 못 찾으면 None. 타임스탬프가 역행하면 1ms 앞으로 밀어 넣는다."""
+        """33개 NormalizedLandmark 리스트, 못 찾으면 None.
+
+        타임스탬프가 역행하면 1ms 앞으로 밀어 넣는다.
+        """
         if timestamp_ms <= self._last_ts_ms:
             timestamp_ms = self._last_ts_ms + 1
         self._last_ts_ms = timestamp_ms

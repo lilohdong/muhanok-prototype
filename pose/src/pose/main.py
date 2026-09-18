@@ -77,7 +77,11 @@ def run_live(args: argparse.Namespace) -> int:
     fps = 0.0
 
     try:
-        with Camera(args.camera) as cam, PoseDetector(model) as det, UdpSink(args.host, args.port) as udp:
+        with (
+            Camera(args.camera) as cam,
+            PoseDetector(model) as det,
+            UdpSink(args.host, args.port) as udp,
+        ):
             print(f"live: camera={args.camera} -> udp://{args.host}:{args.port}"
                   + (f"  record={args.record}" if recorder else ""))
             while True:
@@ -105,7 +109,8 @@ def run_live(args: argparse.Namespace) -> int:
                     fps_window_start = now
                     fps_window_frames = 0
                     if not preview:
-                        print(f"\rseq={seq} fps={fps:.1f} detected={detected}/{sent}", end="", flush=True)
+                        line = f"\rseq={seq} fps={fps:.1f} detected={detected}/{sent}"
+                        print(line, end="", flush=True)
 
                 if preview is not None:
                     status = f"seq={seq} fps={fps:.1f} ok={lm is not None} {len(data)}B"
@@ -124,7 +129,11 @@ def run_live(args: argparse.Namespace) -> int:
 
 
 def run_replay(args: argparse.Namespace) -> int:
-    """원래 프레임 간격대로 재생한다. seq는 이어서 매기고 t는 지금 시각으로 바꾼다 — Unity 쪽 역행 필터와 지연 측정이 그대로 동작하게."""
+    """원래 프레임 간격대로 재생한다.
+
+    seq는 이어서 매기고 t는 지금 시각으로 바꾼다.
+    Unity 쪽 역행 필터와 지연 측정이 그대로 동작하게 하기 위해서다.
+    """
     from pose.adapters.file_sink import read_ndjson
 
     packets = list(read_ndjson(args.path))

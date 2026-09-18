@@ -1,6 +1,7 @@
 """랜드마크 인덱스 상수와 순수 계산. IO·mediapipe·cv2 import 금지.
 
-좌표 규약: MediaPipe 정규화 좌표(0~1). y는 아래로 갈수록 커진다. 여기서도 Unity에서도 부호를 뒤집지 않는다.
+좌표 규약: MediaPipe 정규화 좌표(0~1). y는 아래로 갈수록 커진다.
+여기서도 Unity에서도 부호를 뒤집지 않는다.
 """
 
 from __future__ import annotations
@@ -68,7 +69,10 @@ LandmarkMap = dict[str, list[float]]
 
 
 def extract(landmarks: Sequence[LandmarkLike], precision: int = 4) -> LandmarkMap:
-    """33개 랜드마크 중 SENT_INDICES만 골라 패킷용 dict로 만든다. 키는 문자열 인덱스, 값은 [x, y, visibility]."""
+    """33개 랜드마크 중 SENT_INDICES만 골라 패킷용 dict로 만든다.
+
+    키는 문자열 인덱스, 값은 [x, y, visibility].
+    """
     out: LandmarkMap = {}
     for idx in SENT_INDICES:
         if idx >= len(landmarks):

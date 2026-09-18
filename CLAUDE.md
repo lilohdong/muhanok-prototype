@@ -81,7 +81,7 @@
 |---|---|
 | Python | **3.12** (3.13 금지 — MediaPipe 휠 없음) |
 | 패키지 관리 | **uv** (`uv sync` / `uv run`) |
-| 핵심 의존성 | `mediapipe`, `opencv-python`, `numpy` |
+| 핵심 의존성 | `mediapipe`, `opencv-contrib-python`(mediapipe가 contrib를 요구. `opencv-python`과 같이 깔면 `cv2` 충돌), `numpy<2` |
 | 린트/포맷 | `ruff` |
 | 테스트 | `pytest` |
 
@@ -662,5 +662,7 @@ uv run pose live --preview
 | 자세 지속 시간 | Jump/KneeRaise/Duck 이벤트는 `postureDuration`(0.6s)만큼 자세를 유지한 뒤 `Grounded`로 복귀 | 키보드·포즈 양쪽이 **이벤트**만 내면 되므로 100% 호환 |
 | 교도관 거리 | 시작 `chaserGapStart`(10m). 넘어지면 `stumblePenalty`(4m) 감소, 초당 `gapRecovery`(0.5m/s) 회복, 최대 `chaserGapMax` | 몇 번 실수는 만회 가능, 연속 실수는 종료 |
 | 속도 | `speedStart` 6m/s에서 `speedGainPerMeter`로 선형 증가, `speedMax` 14m/s | 러너 장르 관례 |
-| 장애물 판정 창 | 장애물 위치 ± `hitWindow`(0.6m)를 지나는 순간 한 번 판정 | 순수 함수 `ClearanceRule`을 그 시점에 한 번 호출 |
+| 장애물 판정 시점 | 플레이어 거리가 장애물 위치를 **넘어서는 틱**에 딱 한 번 판정 (`RunSession.ResolveCrossings`) | 순수 함수 `ClearanceRule`을 그 시점에 한 번 호출. 별도 판정 창 없음 |
+| 패킷 파싱 | 범용 JSON 라이브러리 대신 §7 고정 스키마 전용 파서 `PosePacketCodec`(Application) | 의존성 0, 스레드 안전, 녹화 파일과 UDP가 같은 코드 경로 |
+| 사이드 스텝 = 존 방식 | §8.6 참조. 키보드 모드는 임펄스(A/D 한 번 = 한 레인) | 몸 위치와 레인을 1:1로 맞추기 위해 |
 | 카메라 | 플레이어 뒤·위 3인칭 고정(`(0, 4, -7)`, 15° 내려봄) | 3레인이 다 보이는 가장 흔한 앵글 |

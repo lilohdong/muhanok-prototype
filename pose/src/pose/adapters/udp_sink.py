@@ -19,7 +19,8 @@ class UdpSink:
         try:
             self._sock.sendto(data, self._addr)
         except (BlockingIOError, InterruptedError, ConnectionResetError, OSError):
-            # 수신자가 없으면 Windows는 ICMP 거부를 ConnectionResetError로 돌려준다. 다음 프레임에 다시 보낸다.
+            # 수신자가 없으면 Windows는 ICMP 거부를 ConnectionResetError로 돌려준다.
+            # 다음 프레임에 다시 보낸다.
             pass
 
     def close(self) -> None:
