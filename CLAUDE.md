@@ -557,6 +557,19 @@ uv run pose live --preview                # 랜드마크 오버레이 창 표시
 
 ---
 
+### 진행 상황 (2026-09-18)
+
+| 마일스톤 | 코드 | 검증 | 남은 것 |
+|---|---|---|---|
+| M0 | 완료 | batchmode 컴파일 OK, Domain에 `using UnityEngine` 넣으면 CS0246 확인 | — |
+| M1 | 완료 | UDP 합성 패킷 → Jump 이벤트 → 지연 표시 (PlayMode 스모크, 사본에서만) | **실제 카메라로 확인** (`uv run pose live`) |
+| M2 | 완료 | `replay`가 seq/t를 다시 매겨 송신 | **동작별 10회 녹화** → `recordings/<action>_x10.ndjson` |
+| M3 | 완료 | EditMode 61개 통과 (ClearanceRule 32 + 코덱 + 판정기 + 세션) | 씬에 `GameLifetimeScope` 배치(§14.1) 후 플레이 확인 |
+| M4 | 완료 | `GameConfig.inputSource` 한 필드로 전환 | 카메라로 4동작 확인 |
+| M5 | 도구만 | 녹화 회귀 테스트 하네스, 캘리브레이션 게이트, 인스펙터 실시간 튜닝 | 녹화 세트로 인식률 90% / 지연 100ms 측정 |
+
+---
+
 ## 11. 코딩 규칙
 
 ### 공통
