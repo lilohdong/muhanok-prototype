@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 158fac724fef8354fa75e29e275b2070, type: 3}
+  m_Name: PresentationProfile
+  m_EditorClassIdentifier: Muhanok.Presentation::Muhanok.Presentation.PresentationProfile
+  laneWidth: 2
+  floorThickness: 0.2
+  floorColorA: {r: 0.32, g: 0.32, b: 0.36, a: 1}
+  floorColorB: {r: 0.27, g: 0.27, b: 0.31, a: 1}
+  playerColor: {r: 0.95, g: 0.55, b: 0.1, a: 1}
+  stumbleFlashColor: {r: 0.9, g: 0.15, b: 0.15, a: 1}
+  stumbleFlashSeconds: 0.35
+  laneLerpSpeed: 12
+  jumpHeight: 1.6
+  duckScaleY: 0.5
+  kneeRaiseLift: 0.45
+  kneeRaiseTilt: 20
+  postureLerpSpeed: 14
+  chaserColor: {r: 0.2, g: 0.3, b: 0.85, a: 1}
+  chaserLerpSpeed: 6
+  stairsColor: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+  barricadeColor: {r: 0.85, g: 0.75, b: 0.2, a: 1}
+  cageColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+  policeCarColor: {r: 0.1, g: 0.1, b: 0.1, a: 1}
+  coinColor: {r: 1, g: 0.85, b: 0.1, a: 1}
+  coinSpinDegPerSec: 180
+  cageBarHeight: 1.2
+  cameraOffset: {x: 0, y: 4, z: -7}
+  cameraPitchDeg: 15
+  backgroundColor: {r: 0.55, g: 0.65, b: 0.8, a: 1}
+  lightColor: {r: 1, g: 1, b: 1, a: 1}
+  lightIntensity: 1
+  lightEuler: {x: 50, y: -30, z: 0}
+  hudRefreshSeconds: 0.1
+  hudFontSize: 20
+  hudColor: {r: 1, g: 1, b: 1, a: 1}
+  showPoseOverlay: 1
+  poseOverlaySize: 160

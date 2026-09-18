@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9b9a5ee85249f24fb6319b4ea47b2ed, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: Muhanok.Composition::Muhanok.Composition.GameConfig
+  inputSource: 0
+  udpPort: 52100
+  latencySmoothing: 0.1
+  restartAfterSeconds: 5
+  tuning: {fileID: 11400000, guid: 1e3e1005f9197c64db5ca59143a88d31, type: 2}
+  presentation: {fileID: 11400000, guid: 6830a72ea4c649b4ab15dafb78616133, type: 2}
+  speedStart: 6
+  speedMax: 14
+  speedGainPerMeter: 0.02
+  chaserGapStart: 10
+  chaserGapMax: 12
+  stumblePenalty: 4
+  gapRecoveryPerSecond: 0.5
+  coinScore: 10
+  postureDuration: 0.6
+  spawnAheadDistance: 120
+  retireBehindDistance: 20
+  seed: 1
+  segmentLength: 40
+  warmupSegments: 1
+  firstObstacleOffset: 8
+  obstacleSpacing: 10
+  coinsPerRow: 3
+  coinSpacing: 1.5
+  coinRowOffset: 3

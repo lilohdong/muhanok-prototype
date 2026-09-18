@@ -1,8 +1,8 @@
 """CLI 조립(§9.3).
 
-  uv run pose live [--record PATH] [--preview] [--camera N] [--host H] [--port P]
-  uv run pose replay PATH [--loop] [--speed X] [--host H] [--port P]
-  uv run pose download-model
+uv run pose live [--record PATH] [--preview] [--camera N] [--host H] [--port P]
+uv run pose replay PATH [--loop] [--speed X] [--host H] [--port P]
+uv run pose download-model
 """
 
 from __future__ import annotations
@@ -82,8 +82,10 @@ def run_live(args: argparse.Namespace) -> int:
             PoseDetector(model) as det,
             UdpSink(args.host, args.port) as udp,
         ):
-            print(f"live: camera={args.camera} -> udp://{args.host}:{args.port}"
-                  + (f"  record={args.record}" if recorder else ""))
+            print(
+                f"live: camera={args.camera} -> udp://{args.host}:{args.port}"
+                + (f"  record={args.record}" if recorder else "")
+            )
             while True:
                 frame = cam.read()
                 if frame is None:
@@ -146,8 +148,10 @@ def run_replay(args: argparse.Namespace) -> int:
 
     try:
         with UdpSink(args.host, args.port) as udp:
-            print(f"replay: {args.path} ({len(packets)} frames) -> udp://{args.host}:{args.port}"
-                  f"  loop={args.loop} speed={speed}")
+            print(
+                f"replay: {args.path} ({len(packets)} frames) -> udp://{args.host}:{args.port}"
+                f"  loop={args.loop} speed={speed}"
+            )
             while True:
                 base_t = packets[0]["t"]
                 wall_start = time.perf_counter()

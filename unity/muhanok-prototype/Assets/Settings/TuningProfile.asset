@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1a7fc145dae1bc47b8c2f9d009a869f, type: 3}
+  m_Name: TuningProfile
+  m_EditorClassIdentifier: Muhanok.Infrastructure::Muhanok.Infrastructure.TuningProfile
+  bodyMode: 0
+  cameraFacesUser: 1
+  jumpThreshold: 0.45
+  kneeThreshold: 0.55
+  kneeOppositeFactor: 0.6
+  armRaiseThreshold: 0.2
+  duckThreshold: 0.8
+  stepThreshold: 0.5
+  releaseFactor: 0.7
+  confirmFrames: 2
+  cooldownSeconds: 0.3
+  baselineSampleCount: 30
+  baselineMinSamples: 10
+  minVisibility: 0.5
+  lostTimeoutSeconds: 1
