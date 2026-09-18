@@ -1,0 +1,14 @@
+{
+  "name": "Muhanok.Presentation",
+  "rootNamespace": "Muhanok.Presentation",
+  "references": ["Muhanok.Domain", "Muhanok.Application", "Unity.InputSystem", "UniTask", "UnityEngine.UI"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

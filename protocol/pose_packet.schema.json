@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "muhanok/pose_packet/v1",
+  "title": "PosePacket",
+  "description": "Python -> Unity, UDP 127.0.0.1:52100, one UTF-8 JSON line per camera frame. y grows downward (MediaPipe convention).",
+  "type": "object",
+  "required": ["v", "seq", "t", "ok"],
+  "additionalProperties": false,
+  "properties": {
+    "v":   { "const": 1, "description": "protocol version" },
+    "seq": { "type": "integer", "minimum": 0, "description": "monotonic sequence; receivers drop packets that go backwards" },
+    "t":   { "type": "number", "description": "sender wall clock, Unix epoch seconds (fractional)" },
+    "ok":  { "type": "boolean", "description": "pose detected this frame; when false, lm is absent" },
+    "lm": {
+      "type": "object",
+      "description": "landmark index -> [x, y, visibility], normalized 0..1 (may exceed slightly when outside frame)",
+      "propertyNames": { "enum": ["0", "11", "12", "13", "14", "15", "16", "23", "24", "25", "26", "27", "28"] },
+      "additionalProperties": {
+        "type": "array",
+        "items": { "type": "number" },
+        "minItems": 3,
+        "maxItems": 3
+      }
+    }
+  }
+}

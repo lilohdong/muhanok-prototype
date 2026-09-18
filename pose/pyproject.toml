@@ -1,0 +1,40 @@
+[project]
+name = "pose"
+version = "0.1.0"
+description = "Muhanok pose sender: webcam -> MediaPipe PoseLandmarker -> UDP"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "mediapipe==0.10.21",
+    # mediapipe가 opencv-contrib-python을 요구하므로 opencv-python 대신 contrib를 고정한다 (둘 다 깔면 cv2 충돌)
+    "opencv-contrib-python==4.10.0.84",
+    "numpy==1.26.4",
+]
+
+[project.scripts]
+pose = "pose.main:main"
+
+[dependency-groups]
+dev = [
+    "pytest==8.3.5",
+    "ruff==0.11.13",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pose"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ANN"]
+ignore = ["ANN401"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

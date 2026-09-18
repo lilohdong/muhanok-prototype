@@ -1,0 +1,14 @@
+{
+  "name": "Muhanok.Infrastructure",
+  "rootNamespace": "Muhanok.Infrastructure",
+  "references": ["Muhanok.Domain", "Muhanok.Application", "UniTask"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

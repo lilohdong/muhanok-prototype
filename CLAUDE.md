@@ -32,6 +32,15 @@
 | 철창 (Cage) | 엎드리기 (Duck) |
 | 경찰차 (PoliceCar) | 사이드 스텝 (StepLeft / StepRight) |
 
+### 카메라 환경 제약 (2026-09-18 확정)
+
+개발 환경에는 각도가 높은 웹캠이 없고 **노트북 내장 캠만** 있다. 카메라는 **머리 ~ 어깨선 살짝 아래**까지만 찍는다.
+따라서 골반(23/24)·무릎(25/26)·발목(27/28)은 **화면 밖**이며 신뢰할 수 없다.
+
+- 판정기는 **`BodyMode.UpperBody`** 를 기본으로 하고, 전신 캠이 생기면 `BodyMode.FullBody`(§8.3 원안)로 전환할 수 있게 둘 다 구현한다.
+- 상반신 모드에서 계단(Stairs)의 요구 동작은 **무릎 들기 대신 "한 손 들기(ArmRaise)"** 로 감지한다. 게임 도메인의 이름(`PlayerAction.KneeRaise`, `PostureState.KneeRaised`)은 그대로 두고, **어떤 제스처가 그 액션을 만드는지는 판정기(Infrastructure)만 안다.** 전신 캠으로 바꾸면 판정기만 바뀌고 게임은 그대로다.
+- 상반신 모드의 구체적 규칙은 §8.6.
+
 ### 프로토타입 범위
 
 **포함한다**
@@ -56,8 +65,8 @@
 | 항목 | 값 | 비고 |
 |---|---|---|
 | Unity | **6.3 LTS (6000.3.x)** | 팀 전체 패치 버전까지 동일하게 |
-| 렌더 파이프라인 | URP | 3D (URP) 템플릿 |
-| DI | **VContainer** (`jp.hadashikick.vcontainer`) | OpenUPM 또는 Git URL |
+| 렌더 파이프라인 | **Built-in** | 프로젝트가 3D(Core) 템플릿으로 생성됨. 프리미티브+단색만 쓰므로 URP 전환 불필요 |
+| DI | **VContainer** (`jp.hadashikick.vcontainer`) | Git URL (`manifest.json`에 태그 고정) |
 | 비동기 | **UniTask** (`com.cysharp.unitask`) | 코루틴 대신 사용 |
 | 입력 | **Input System** (`com.unity.inputsystem`) | 구 Input Manager 사용 금지 |
 | 풀링 | `UnityEngine.Pool.ObjectPool<T>` | **내장 기능. 직접 구현하지 말 것** |
@@ -88,7 +97,7 @@ muhanok/
 ├─ .gitignore                      # GitHub 공식 Unity 템플릿
 ├─ .gitattributes                  # Git LFS 추적 설정
 │
-├─ unity/                          # Unity 프로젝트 루트
+├─ unity/muhanok-prototype/        # Unity 프로젝트 루트 (Hub가 만든 하위 폴더 그대로 사용)
 │  └─ Assets/
 │     ├─ Muhanok/
 │     │  ├─ Domain/                # 순수 C#, 엔진 참조 없음
@@ -350,15 +359,19 @@ namespace Muhanok.Application.Ports
 | `ok` | 전신 인식 성공 여부. `false`면 `lm` 없음 |
 | `lm` | 랜드마크. 키는 MediaPipe 인덱스, 값은 `[x, y, visibility]` (정규화 좌표 0~1) |
 
-**33개 전부 보내지 않는다.** 아래 9개만 보낸다.
+**33개 전부 보내지 않는다.** 아래 13개만 보낸다. (상반신 모드용 팔꿈치/손목 4개가 원안 9개에 추가됨. 1KB 제한은 여전히 지킨다.)
 
-| 인덱스 | 부위 |
-|---|---|
-| 0 | 코 (nose) |
-| 11 / 12 | 왼쪽 / 오른쪽 어깨 |
-| 23 / 24 | 왼쪽 / 오른쪽 골반 |
-| 25 / 26 | 왼쪽 / 오른쪽 무릎 |
-| 27 / 28 | 왼쪽 / 오른쪽 발목 |
+| 인덱스 | 부위 | 상반신 모드 |
+|---|---|---|
+| 0 | 코 (nose) | 사용 |
+| 11 / 12 | 왼쪽 / 오른쪽 어깨 | 사용 (기준 단위) |
+| 13 / 14 | 왼쪽 / 오른쪽 팔꿈치 | 사용 |
+| 15 / 16 | 왼쪽 / 오른쪽 손목 | 사용 (ArmRaise) |
+| 23 / 24 | 왼쪽 / 오른쪽 골반 | 화면 밖 — 무시 |
+| 25 / 26 | 왼쪽 / 오른쪽 무릎 | 화면 밖 — 무시 |
+| 27 / 28 | 왼쪽 / 오른쪽 발목 | 화면 밖 — 무시 |
+
+화면 밖 랜드마크도 MediaPipe가 추정값을 내놓지만 `visibility`가 낮다. Python은 그대로 보내고, Unity 판정기가 `visibility < minVisibility`면 그 랜드마크를 **없는 것으로** 취급한다.
 
 > MediaPipe의 `y`는 **아래로 갈수록 커진다.** Unity로 넘긴 뒤 부호를 뒤집지 말고, 판정 코드 안에서 일관되게 "y가 작아지면 위로 올라간 것"으로 다룬다. 이 규칙을 코드 주석에 반드시 명시한다.
 
@@ -391,7 +404,7 @@ shoulderW   = |lm[11].x - lm[12].x|
 - 최근 1초간, **어떤 동작도 감지되지 않은 프레임**들의 `hipMid.y`, `hipMid.x`, `noseY`의 **중앙값**을 베이스라인으로 유지한다.
 - 평균이 아니라 중앙값을 쓴다. 튀는 프레임 하나에 기준이 흔들리지 않게 하기 위해서다.
 
-### 8.3 판정 규칙 (v1 — 전부 `TuningProfile`에서 조정 가능하게)
+### 8.3 판정 규칙 — 전신 모드 `BodyMode.FullBody` (v1 — 전부 `TuningProfile`에서 조정 가능하게)
 
 | 동작 | 조건 | 초기 임계값 |
 |---|---|---|
@@ -412,6 +425,36 @@ shoulderW   = |lm[11].x - lm[12].x|
 
 `PostureDetector`는 프레임 입력을 받아 `PostureState`를 출력하는 **순수한 상태 기계**로 만든다.
 Unity 타입에 의존시키지 말고, 입력을 `PoseFrame`(순수 구조체)으로 추상화해서 **Application 계층에 두고 유닛 테스트한다.** 녹화 파일(§9.3)을 그대로 먹여서 회귀 테스트가 가능해진다.
+
+### 8.6 상반신 모드 (`BodyMode.UpperBody`) — 이 환경의 기본값
+
+§1의 카메라 제약 때문에 골반·무릎·발목을 쓸 수 없다. §8.1~8.4의 **구조는 그대로** 두고 신호만 바꾼다.
+
+**정규화 단위**
+```
+shoulderMid = (lm[11] + lm[12]) / 2
+shoulderW   = |lm[11].x - lm[12].x|        // 기준 단위. 베이스라인의 중앙값(W)을 쓴다
+noseY       = lm[0].y
+```
+`torso`는 못 구하므로 **모든 임계값은 베이스라인 `W`의 배수**로만 표현한다.
+정규화 좌표는 x가 프레임 너비, y가 프레임 높이 기준이라 등방성이 아니다. 카메라를 640×480으로 고정(§9.2)하므로 이 비율은 임계값 초기값에 녹여 두고 코드에서 따로 보정하지 않는다.
+
+**베이스라인** — §8.2와 같이 최근 1초 idle 프레임의 중앙값. 단 `shoulderMid.y / shoulderMid.x / noseY / shoulderW` 4개.
+
+**판정 규칙 (v1, 전부 `TuningProfile`)**
+
+| 동작 | 조건 | 초기 임계값 | 근거 |
+|---|---|---|---|
+| **Jump** | `baselineShoulderY - shoulderMid.y > T_jump * W` | `T_jump = 0.45` | 전신이 뜨면 어깨도 같이 뜬다 |
+| **KneeRaise** (실제 제스처: **ArmRaise**) | 한쪽 손목 `noseY - wristY > T_arm * W` **이고** 반대쪽 손목은 어깨선 아래 | `T_arm = 0.20` | 무릎이 안 보이므로 대체. 한 손만 → 좌우 흔들림/기지개와 구분 |
+| **Duck** | `noseY - baselineNoseY > T_duck * W` | `T_duck = 0.80` | 점프 직전 움츠림(≈0.3W)보다 확실히 커야 한다 |
+| **StepLeft/Right** | `shoulderMid.x - baselineShoulderX` 가 `±T_step * W` 밖이면 그 쪽 **존(zone)** | `T_step = 0.50` | 아래 "존 방식" 참조 |
+
+**사이드 스텝은 임펄스가 아니라 존(zone) 방식이다.** 몸의 x 위치를 `Left / Center / Right` 3개 존으로 나누고, 존이 바뀔 때마다 `StepLeft`/`StepRight`를 한 번 낸다. 왼쪽 존에서 가운데로 돌아오면 `StepRight`가 난다. 이래야 실제 몸 위치와 게임 레인이 1:1로 맞는다. 존 경계에는 히스테리시스(§8.4)를 건다. 베이스라인 x는 **Center 존에 있을 때만** 갱신한다.
+
+**손실 처리** — 필요한 랜드마크 중 하나라도 `visibility < minVisibility`(초기 0.5)면 그 프레임은 해당 동작을 판정하지 않는다(상태 유지). `ok:false`가 `lostTimeout`(초기 1.0s) 넘게 이어지면 자세를 `Grounded`로 되돌리고 HUD에 "인식 끊김"을 띄운다. 게임은 멈추지 않는다.
+
+**전신 모드(§8.3)와의 관계** — `PostureDetector`는 `BodyMode`를 받아 두 규칙 세트 중 하나를 쓴다. 안정화 3종(§8.4)·베이스라인·상태 기계·출력 타입은 공유한다.
 
 ---
 
@@ -582,7 +625,8 @@ uv sync
 uv run pose live --preview
 
 # 2. Unity
-# unity/ 를 Unity Hub에서 열고 Play
+# unity/muhanok-prototype/ 를 Unity Hub에서 열고 Play
+# (씬 준비는 §14.1 참조)
 ```
 
 키보드 모드로 실행하려면 `Composition/GameLifetimeScope`의 입력 소스 설정을 `Keyboard`로 바꾼다.
@@ -593,3 +637,30 @@ uv run pose live --preview
 | W | KneeRaise |
 | S | Duck |
 | A / D | StepLeft / StepRight |
+
+### 14.1 씬 준비 (한 번만)
+
+씬 파일은 에이전트가 편집하지 않는다(§0-3). 게임에 필요한 오브젝트(카메라·조명·플레이어·HUD·구간)는 **전부 런타임에 코드가 만든다.**
+씬에 필요한 것은 합성 루트 하나뿐이다.
+
+1. `Assets/Scenes/SampleScene.unity` 를 연다.
+2. Hierarchy에서 빈 GameObject를 만들고 이름을 `GameLifetimeScope`로 한다.
+3. `Muhanok.Composition.GameLifetimeScope` 컴포넌트를 붙인다.
+4. Inspector의 `Game Config` 슬롯에 `Assets/Settings/GameConfig.asset` 을 끌어 넣는다.
+5. 템플릿이 만든 `Main Camera` / `Directional Light`는 그대로 둬도 된다 (코드가 있으면 재사용, 없으면 생성).
+6. Play.
+
+입력 소스 전환은 `GameConfig.asset`의 `Input Source` 필드(`Keyboard` / `Pose`)로 한다.
+
+### 14.2 사양 밖 결정 기록
+
+사양에 없어서 프로토타입용으로 정한 값. 바꾸려면 여기와 `GameTuning.asset`을 같이 고친다.
+
+| 항목 | 결정 | 이유 |
+|---|---|---|
+| 점수 공식 | `Score = floor(DistanceTravelled) + Coins × coinScore` (`coinScore = 10`) | "거리 기반 점수"를 가장 단순하게 |
+| 자세 지속 시간 | Jump/KneeRaise/Duck 이벤트는 `postureDuration`(0.6s)만큼 자세를 유지한 뒤 `Grounded`로 복귀 | 키보드·포즈 양쪽이 **이벤트**만 내면 되므로 100% 호환 |
+| 교도관 거리 | 시작 `chaserGapStart`(10m). 넘어지면 `stumblePenalty`(4m) 감소, 초당 `gapRecovery`(0.5m/s) 회복, 최대 `chaserGapMax` | 몇 번 실수는 만회 가능, 연속 실수는 종료 |
+| 속도 | `speedStart` 6m/s에서 `speedGainPerMeter`로 선형 증가, `speedMax` 14m/s | 러너 장르 관례 |
+| 장애물 판정 창 | 장애물 위치 ± `hitWindow`(0.6m)를 지나는 순간 한 번 판정 | 순수 함수 `ClearanceRule`을 그 시점에 한 번 호출 |
+| 카메라 | 플레이어 뒤·위 3인칭 고정(`(0, 4, -7)`, 15° 내려봄) | 3레인이 다 보이는 가장 흔한 앵글 |

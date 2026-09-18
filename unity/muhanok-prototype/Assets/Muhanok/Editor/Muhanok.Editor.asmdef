@@ -1,0 +1,14 @@
+{
+  "name": "Muhanok.Editor",
+  "rootNamespace": "Muhanok.Editor",
+  "references": ["Muhanok.Domain", "Muhanok.Application", "Muhanok.Infrastructure", "Muhanok.Presentation", "Muhanok.Composition"],
+  "includePlatforms": ["Editor"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

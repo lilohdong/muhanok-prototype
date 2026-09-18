@@ -1,0 +1,14 @@
+{
+  "name": "Muhanok.Composition",
+  "rootNamespace": "Muhanok.Composition",
+  "references": ["Muhanok.Domain", "Muhanok.Application", "Muhanok.Infrastructure", "Muhanok.Presentation", "VContainer", "UniTask"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

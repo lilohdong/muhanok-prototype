@@ -1,0 +1,14 @@
+{
+  "name": "Muhanok.Application",
+  "rootNamespace": "Muhanok.Application",
+  "references": ["Muhanok.Domain"],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": false,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": true
+}
